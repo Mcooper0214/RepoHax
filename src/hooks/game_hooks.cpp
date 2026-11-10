@@ -1095,10 +1095,14 @@ namespace Cheat
         Unity::Transform transform = camera.GetTransform();
         Unity::Vector3 pos = transform.GetPosition() + transform.GetForward() * 2.f - transform.GetUp();
 
-        if (SemiFunc::IsMasterClient())
-            Photon::PhotonNetwork::InstantiateRoomObject(item.prefab().resourcePath(), pos, Unity::Quaternion::identity());
+        // ollie-spawn-fix: mutually exclusive branches. The original ran BOTH
+        // in single-player (IsMasterClient && !IsMultiplayer were both true),
+        // firing PhotonNetwork.Instantiate with no Photon room then also a
+        // local Instantiate — Photon call crashed the game.
         if (!SemiFunc::IsMultiplayer())
             Unity::Object::Instantiate<Unity::GameObject>(item.prefab().Prefab(), pos, Unity::Quaternion::identity());
+        else if (SemiFunc::IsMasterClient())
+            Photon::PhotonNetwork::InstantiateRoomObject(item.prefab().resourcePath(), pos, Unity::Quaternion::identity());
     }
 
     static void SpawnCosmeticBox(int rarity)

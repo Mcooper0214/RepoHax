@@ -288,5 +288,28 @@ namespace Cheat
         G->GameInputPrevented = false;
         G->LockedCursorPos.Reset();
         G->MenuVisible = false;
+
+        // ollie-sprint-flush: release movement keys the user may have held
+        // through the menu. WM_INPUT is blocked while the menu is open, so
+        // Unity's raw-input FSM never saw key releases; synthesize keyups
+        // via both VK and scancode channels so either backend picks them up.
+        {
+            auto up = [](WORD vk) {
+                INPUT a = {}; a.type = INPUT_KEYBOARD; a.ki.wVk = vk;
+                a.ki.dwFlags = KEYEVENTF_KEYUP;
+                SendInput(1, &a, sizeof(INPUT));
+                INPUT b = {}; b.type = INPUT_KEYBOARD;
+                b.ki.wScan = (WORD)MapVirtualKeyW(vk, MAPVK_VK_TO_VSC);
+                b.ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_SCANCODE;
+                SendInput(1, &b, sizeof(INPUT));
+            };
+            const WORD keys[] = {
+                'W','A','S','D', VK_SPACE,
+                VK_SHIFT, VK_LSHIFT, VK_RSHIFT,
+                VK_CONTROL, VK_LCONTROL, VK_RCONTROL,
+                VK_MENU, VK_LMENU, VK_RMENU
+            };
+            for (WORD k : keys) up(k);
+        }
     }
 }
