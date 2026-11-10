@@ -114,7 +114,21 @@ namespace Cheat
                     Hax::Gui::EndHorizontal();
                 }
 
-                Hax::Gui::Space(30_px);
+                // mcoop-brand: text label under the logo
+                Hax::Gui::Space(6_px);
+                {
+                    Hax::Gui::BeginHorizontal();
+                    {
+                        const Hax::WStringView brand = L"MCOOP TRAINER";
+                        const float fontH = Hax::Gui::Scale(10.f);
+                        float textW = Hax::Gui::CalcTextSize(G->NunitoSans_ExtraBold, brand, fontH).X;
+                        Hax::Gui::Space((sidePanelWidth - textW) / 2.f);
+                        Label(G->NunitoSans_ExtraBold, brand, fontH, 0xF0F0F0FF);
+                    }
+                    Hax::Gui::EndHorizontal();
+                }
+
+                Hax::Gui::Space(24_px);
 
                 const float padding = 12_px;
                 Hax::Gui::BeginHorizontal();
