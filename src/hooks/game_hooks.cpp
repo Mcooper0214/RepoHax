@@ -293,6 +293,12 @@ namespace Cheat
                     manager.ChangeLevel(true, false);
             }
 
+            if (G->SetMoney)
+            {
+                G->SetMoney = false;
+                SemiFunc::StatSetRunCurrency(G->MoneyAmount);
+            }
+
             if (G->ActivateNextPoint)
             {
                 G->ActivateNextPoint = false;

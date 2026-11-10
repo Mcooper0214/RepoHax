@@ -39,6 +39,26 @@ namespace Cheat
                 }
             }
             EndPanel();
+
+            // ollie-money: set run currency. Host / single-player only.
+            BeginPanel(LINE_ID);
+            PanelHeader(L"MONEY", G->Loc[LocKey_AvailableIfHost]);
+            {
+                {
+                    Hax::char16 buf[24]{};
+                    swprintf_s(buf, _countof(buf), L"$%d", G->MoneyAmount);
+                    SliderEx(LINE_ID, L"Amount", buf, &G->MoneyAmount, 0, 1000000, SliderConvertInt);
+                }
+
+                HorizontalLine(1_px);
+
+                {
+                    bool enabled = !G->IsClient && G->IsInGame;
+                    if (Button(LINE_ID, L"Set Money", {}, {.Enabled = enabled, .MinW = Hax::Gui::GetContentRegionAvail().X}))
+                        G->SetMoney = true;
+                }
+            }
+            EndPanel();
         }
         Hax::Gui::Dummy({0.f, 0.f});
         Hax::Gui::EndVertical();

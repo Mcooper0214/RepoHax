@@ -158,6 +158,10 @@ namespace Cheat
         bool                                TruckEsp;
         bool                                TeleportToTruck;
 
+        // Money
+        int                                 MoneyAmount = 100000;
+        bool                                SetMoney;
+
         // Events
         HANDLE                              UnityLoadedEvent;
 
