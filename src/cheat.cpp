@@ -60,7 +60,7 @@ namespace Cheat
     static void SetupConfig(Hax::IniFile& ini)
     {
         Hax::IniAddEntry(ini, "Settings",   "UseConsole",          &G->UseConsole,          Hax::IniFileWrite_Bool, Hax::IniFileRead_Bool);
-        Hax::IniAddEntry(ini, "Settings",   "VkOpenClose",         &G->VkOpenClose,         Hax::IniFileWrite_Int,  IniFileRead_IntClamped<VK_OEM_3, 1, 255>);
+        Hax::IniAddEntry(ini, "Settings",   "VkOpenClose",         &G->VkOpenClose,         Hax::IniFileWrite_Int,  IniFileRead_IntClamped<VK_RSHIFT, 1, 255>);
         Hax::IniAddEntry(ini, "Settings",   "Language",            &G->Language,            Hax::IniFileWrite_Int,  IniFileRead_IntClamped<0, 0, Lang_Count - 1>);
         Hax::IniAddEntry(ini, "Settings",   "DarkenBackground",    &G->DarkenBackground,    Hax::IniFileWrite_Bool, Hax::IniFileRead_Bool);
 

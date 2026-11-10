@@ -50,7 +50,7 @@ namespace Cheat
         // Settings
         bool                                UseConsole;
         bool                                DarkenBackground;
-        int                                 VkOpenClose = VK_OEM_3;
+        int                                 VkOpenClose = VK_RSHIFT;
         Lang                                Language;
 
         // Stats
