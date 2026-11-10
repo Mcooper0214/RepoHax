@@ -149,7 +149,11 @@ namespace Cheat
         {
             switch (msg->message)
             {
+            case WM_KEYDOWN:
+            case WM_KEYUP:
             case WM_SYSKEYDOWN:
+            case WM_SYSKEYUP:
+            case WM_CHAR:
             case WM_XBUTTONDOWN:
             case WM_XBUTTONUP:
             case WM_XBUTTONDBLCLK:
@@ -269,7 +273,7 @@ namespace Cheat
             G->ForceCursorVisible = false;
 
             int count = ::ShowCursor(TRUE);
-            while (count != 0) 
+            while (count != 0)
                 count = ::ShowCursor(count > 0 ? FALSE : TRUE);
 
             if (!G->OrigCursorVisible)
@@ -288,5 +292,30 @@ namespace Cheat
         G->GameInputPrevented = false;
         G->LockedCursorPos.Reset();
         G->MenuVisible = false;
+
+        // Release movement keys the user may have held during the menu.
+        // WM_INPUT is dropped while the menu is open, so Unity's raw-input
+        // FSM never sees key releases. Dual-flush (VK + scancode) through
+        // real OS events after the menu closes resyncs the game.
+        {
+            const WORD keys[] = {
+                'W','A','S','D', VK_SPACE,'E','Q','F','R',
+                VK_SHIFT, VK_LSHIFT, VK_RSHIFT,
+                VK_CONTROL, VK_LCONTROL, VK_RCONTROL,
+                VK_MENU, VK_LMENU, VK_RMENU
+            };
+            for (WORD k : keys)
+            {
+                INPUT a = {}, b = {};
+                a.type = INPUT_KEYBOARD;
+                a.ki.wVk = k;
+                a.ki.dwFlags = KEYEVENTF_KEYUP;
+                SendInput(1, &a, sizeof(INPUT));
+                b.type = INPUT_KEYBOARD;
+                b.ki.wScan = (WORD)MapVirtualKeyW(k, MAPVK_VK_TO_VSC);
+                b.ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_SCANCODE;
+                SendInput(1, &b, sizeof(INPUT));
+            }
+        }
     }
 }
